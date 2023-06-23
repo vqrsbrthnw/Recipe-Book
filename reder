@@ -1,0 +1,60 @@
+# recipes.py
+
+import json
+
+class RecipeBook:
+    def __init__(self):
+        self.recipes = []
+
+    def load_recipes(self, filename):
+        with open(filename, 'r') as file:
+            self.recipes = json.load(file)
+
+    def save_recipes(self, filename):
+        with open(filename, 'w') as file:
+            json.dump(self.recipes, file, indent=4)
+
+    def add_recipe(self, recipe):
+        self.recipes.append(recipe)
+
+    def search_by_category(self, category):
+        matching_recipes = []
+        for recipe in self.recipes:
+            if recipe['category'] == category:
+                matching_recipes.append(recipe)
+        return matching_recipes
+
+    def print_recipe(self, recipe):
+        print("Title:", recipe['title'])
+        print("Category:", recipe['category'])
+        print("Ingredients:", ", ".join(recipe['ingredients']))
+        print("Instructions:")
+        for step in recipe['instructions']:
+            print("-", step)
+
+# Пример использования
+
+# Создание экземпляра книги рецептов
+recipe_book = RecipeBook()
+
+# Загрузка рецептов из файла
+recipe_book.load_recipes('recipes.json')
+
+# Добавление нового рецепта
+new_recipe = {
+    'title': 'Пирожки с картошкой',
+    'category': 'Закуски',
+    'ingredients': ['тесто', 'картошка', 'лук'],
+    'instructions': ['Приготовить начинку из картошки и лука', 'Завернуть начинку в тесто', 'Запекать в духовке до золотистой корочки']
+}
+recipe_book.add_recipe(new_recipe)
+
+# Поиск рецептов по категории
+category = 'Десерты'
+matching_recipes = recipe_book.search_by_category(category)
+print(f"Рецепты в категории '{category}':")
+for recipe in matching_recipes:
+    recipe_book.print_recipe(recipe)
+
+# Сохранение рецептов в файл
+recipe_book.save_recipes('recipes.json')
